@@ -13,6 +13,14 @@
                         type="date"
                         placeholder="选择日期时间">
                     </el-date-picker>
+                    <el-select v-model="type" placeholder="请选择">
+                        <el-option
+                            v-for="item in types"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                        </el-option>
+                    </el-select>
                     <el-select v-model="code" placeholder="请选择">
                         <el-option
                             v-for="item in codes"
@@ -45,6 +53,7 @@ export default {
         return {
             start: '2020-03-02',
             end: '2020-03-05',
+
             code: 'sz.000016',
             codes: [
                 {
@@ -52,6 +61,23 @@ export default {
                     label: "上证50",
                 }
             ],
+
+            type: 0,
+            types: [
+                {
+                    value: 0,
+                    label: 'CLOSE',
+                },
+                {
+                    value: 1,
+                    label: 'LOW',
+                },
+                {
+                    value: 2,
+                    label: 'HIGH',
+                }
+            ],
+
             line: {
                 title: {
                     text: "折线图"
@@ -90,7 +116,33 @@ export default {
                 ]
             }
         };
-    }
+    },
+    methods: {
+        // 获取当前日期
+        getNowDate: function() {
+            var today = new Date()
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0');
+            var yyyy = today.getFullYear();
+
+            return yyyy+'-'+mm+'-'+dd;
+        },
+        // 获取前一个月日期
+        getLastMonthDate: function() {
+            var today = new Date();
+            today.setMonth(today.getMonth()-1);
+
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0');
+            var yyyy = today.getFullYear();
+
+            return yyyy+'-'+mm+'-'+dd;
+        },
+    },
+    mounted: function() {
+        this.start = this.getLastMonthDate();
+        this.end = this.getNowDate();
+    },
 }
 </script>
 
