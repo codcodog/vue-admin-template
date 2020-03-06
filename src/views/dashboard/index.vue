@@ -43,6 +43,11 @@
 <script>
 import ECharts from "vue-echarts/components/ECharts";
 import "echarts/lib/chart/line";
+import "echarts/lib/component/legend";
+import "echarts/lib/component/tooltip";
+
+import {getStockData} from '@/api/stock'
+
 
 export default {
     name: 'Dashboard',
@@ -54,10 +59,10 @@ export default {
             start: '2020-03-02',
             end: '2020-03-05',
 
-            code: 'sz.000016',
+            code: 'sh.000016',
             codes: [
                 {
-                    value: "sz.000016",
+                    value: "sh.000016",
                     label: "上证50",
                 }
             ],
@@ -79,16 +84,14 @@ export default {
             ],
 
             line: {
-                title: {
-                    text: "折线图"
-                },
                 tooltip: {
-                    show: true,
-                    trigger: 'ayis',
-                    boundaryGap: false
+                    trigger: 'axis',
                 },
                 legend: {
-                    data: ["price", "ave", "mid"]
+                    selected: {
+                        "中位数": false
+                    },
+                    data: ["价格", "平均数", "中位数"]
                 },
                 grid: {
                     left: "left",
@@ -97,21 +100,27 @@ export default {
                 xAxis: {
                     boundaryGap : false,
                     type: "category",
-                    data: ["2020-01-01", "2020-01-02", "2020-01-03", "2020-01-04", "2020-01-05", "2020-01-06", "2020-01-01", "2020-01-01", "2020-01-01", "2020-01-01", "2020-01-01", "2020-01-01", "2020-01-01", "2020-01-01", "2020-01-01", "2020-01-01", "2020-01-01", "2020-01-01", "2020-01-01", "2020-01-01", "2020-01-01", "2020-01-01"]
+                    data: []
                 },
                 yAxis: {
                 },
                 series: [
                     {
-                        name: "price",
+                        name: "价格",
                         type: "line",
                         smooth: true,
-                        data: [5, 20, 36, 10, 10, 20, 23, 233, 883, 23, 299, 3883, 33, 12, 33, 31, 89, 34, 83, 23, 22]
+                        areaStyle: {},
+                        data: []
                     },
                     {
-                        name: "ave",
+                        name: "平均数",
                         type: "line",
-                        data: [150, 150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150]
+                        data: []
+                    },
+                    {
+                        name: "中位数",
+                        type: "line",
+                        data: []
                     }
                 ]
             }
@@ -138,10 +147,64 @@ export default {
 
             return yyyy+'-'+mm+'-'+dd;
         },
+        // 获取股票数据
+        getStockData: function() {
+            var data = {
+                type: this.type,
+                params: {
+                    code: this.code,
+                    start_date: this.start,
+                    end_date: this.end
+                }
+            };
+            getStockData(data).then(response => {
+                if (response.code != 20000) {
+                    this.$message.error(response.message);
+                    return
+                }
+                if (response.data.prices.length == 0) {
+                    this.$message.info('Empty stock data.');
+                    return
+                }
+                this.dealStockData(response.data)
+            })
+        },
+        // 整理数据
+        dealStockData: function(data) {
+            this.initData()
+            for (var index in data.prices) {
+                this.line.xAxis.data.push(data.prices[index].date)
+                this.line.series[0].data.push(data.prices[index].price)
+                this.line.series[1].data.push(data.ave)
+                this.line.series[2].data.push(data.mid)
+            }
+        },
+        // 初始化值
+        initData: function() {
+            this.line.xAxis.data = []
+            this.line.series[0].data = []
+            this.line.series[1].data = []
+            this.line.series[2].data = []
+        },
+    },
+    watch: {
+        code: function(newValue, oldValue) {
+            this.getStockData()
+        },
+        start: function(newValue, oldValue) {
+            this.getStockData()
+        },
+        end: function(newValue, oldValue) {
+            this.getStockData()
+        },
+        type: function(newValue, oldValue) {
+            this.getStockData()
+        },
     },
     mounted: function() {
         this.start = this.getLastMonthDate();
         this.end = this.getNowDate();
+        this.getStockData()
     },
 }
 </script>
@@ -152,6 +215,9 @@ export default {
 }
 .item {
     padding-left: 37px;
+}
+.charts {
+    margin-top: 37px;
 }
 .echarts {
     width: 100%;
