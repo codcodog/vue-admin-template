@@ -5,11 +5,13 @@
                 <div class="item">
                     <el-date-picker
                         v-model="start"
+                        @change="changeStart()"
                         type="date"
                         placeholder="选择日期时间">
                     </el-date-picker> - 
                     <el-date-picker
                         v-model="end"
+                        @change="changeEnd()"
                         type="date"
                         placeholder="选择日期时间">
                     </el-date-picker>
@@ -186,15 +188,17 @@ export default {
             this.line.series[1].data = []
             this.line.series[2].data = []
         },
+
+        // 日期改变，重新加载数据
+        changeStart: function() {
+            this.getStockData()
+        },
+        changeEnd: function() {
+            this.getStockData()
+        },
     },
     watch: {
         code: function(newValue, oldValue) {
-            this.getStockData()
-        },
-        start: function(newValue, oldValue) {
-            this.getStockData()
-        },
-        end: function(newValue, oldValue) {
             this.getStockData()
         },
         type: function(newValue, oldValue) {
