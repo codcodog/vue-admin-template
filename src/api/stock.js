@@ -59,10 +59,19 @@ function getHigh(data) {
     })
 }
 
+// 新增股票
 export function addStock(data) {
     return request({
         url: BASE_URL+'/stock/add',
         method: 'post',
         data
+    })
+}
+
+// 获取股票
+export function getStock() {
+    return request({
+        url: BASE_URL+'/stock/list',
+        method: 'get'
     })
 }

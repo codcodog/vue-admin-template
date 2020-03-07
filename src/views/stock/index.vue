@@ -24,11 +24,15 @@
                 <el-table-column
                     label="操作">
                     <template slot-scope="scope">
-                        <el-button @click="handleClick(scope.row)" type="text" >初始化</el-button>
+                        <el-button @click="handleClick(scope.row)" type="text" v-if="scope.row.isInit == 0">初始化</el-button>
+                        <el-button @click="handleClick(scope.row)" type="text" disabled v-else >已初始化</el-button>
+
                         <el-button type="text" >编辑</el-button>
                         <el-button type="text" >增量同步</el-button>
                         <el-button type="text" >同步日志</el-button>
-                        <el-button type="text" >停止跟踪</el-button>
+
+                        <el-button type="text" v-if="scope.row.status == 1">停止跟踪</el-button>
+                        <el-button type="text" v-else>开始跟踪</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -40,6 +44,7 @@
 </template>
 <script>
 import Add from './add'
+import {getStock} from '@/api/stock'
 
 export default {
     name: "data-sync",
@@ -87,7 +92,21 @@ export default {
         },
         closeAdd: function() {
             this.showAdd = false
+            this.getStockList()
         },
+        // 获取股票列表
+        getStockList: function() {
+            getStock().then(response => {
+                if (response.code != 20000) {
+                    this.$message.error(response.message);
+                    return
+                }
+                this.tableData = response.data
+            })
+        },
+    },
+    mounted: function() {
+        this.getStockList()
     },
 }
 </script>
