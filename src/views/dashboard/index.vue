@@ -56,8 +56,8 @@ export default {
     },
     data: function() {
         return {
-            start: '2020-03-02',
-            end: '2020-03-05',
+            start: '',
+            end: '',
 
             code: 'sh.000016',
             codes: [

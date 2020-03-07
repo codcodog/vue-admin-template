@@ -56,23 +56,15 @@ export const constantRoutes = [
   },
 
   {
-    path: '/example',
+    path: '/data',
     component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: '数据同步', icon: 'example' },
+    redirect: '/data/sync',
     children: [
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: '增量同步', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: '初始化', icon: 'tree' }
+        path: '/data/sync',
+        name: 'Sync',
+        component: () => import('@/views/stock/index'),
+        meta: { title: '数据同步', icon: 'table' }
       }
     ]
   },

@@ -58,3 +58,11 @@ function getHigh(data) {
         params: data
     })
 }
+
+export function addStock(data) {
+    return request({
+        url: BASE_URL+'/stock/add',
+        method: 'post',
+        data
+    })
+}
