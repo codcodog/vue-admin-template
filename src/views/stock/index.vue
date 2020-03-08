@@ -5,6 +5,7 @@
         </el-row>
         <el-row class="table">
             <el-table
+                v-loading="loading"
                 :data="tableData"
                 style="width: 100%">
                 <el-table-column
@@ -24,12 +25,12 @@
                 <el-table-column
                     label="操作">
                     <template slot-scope="scope">
-                        <el-button @click="handleClick(scope.row)" type="text" v-if="scope.row.isInit == 0">初始化</el-button>
-                        <el-button @click="handleClick(scope.row)" type="text" disabled v-else >已初始化</el-button>
+                        <el-button @click="handleInit(scope.row.code)" type="text" v-if="scope.row.isInit == 0">初始化</el-button>
+                        <el-button type="text" disabled v-else>初始化</el-button>
 
-                        <el-button type="text" >编辑</el-button>
-                        <el-button type="text" >增量同步</el-button>
-                        <el-button type="text" >同步日志</el-button>
+                        <el-button type="text">编辑</el-button>
+                        <el-button type="text">增量同步</el-button>
+                        <el-button type="text">同步日志</el-button>
 
                         <el-button type="text" v-if="scope.row.status == 1">停止跟踪</el-button>
                         <el-button type="text" v-else>开始跟踪</el-button>
@@ -44,7 +45,7 @@
 </template>
 <script>
 import Add from './add'
-import {getStock} from '@/api/stock'
+import {getStock, initStock} from '@/api/stock'
 
 export default {
     name: "data-sync",
@@ -53,33 +54,8 @@ export default {
     },
     data: function() {
         return {
-            tableData: [
-                {
-                    id: 1,
-                    code: "sh.000016",
-                    name: "上证50",
-                },
-                {
-                    id: 1,
-                    code: "sh.000016",
-                    name: "上证50",
-                },
-                {
-                    id: 1,
-                    code: "sh.000016",
-                    name: "上证50",
-                },
-                {
-                    id: 1,
-                    code: "sh.000016",
-                    name: "上证50",
-                },
-                {
-                    id: 1,
-                    code: "sh.000016",
-                    name: "上证50",
-                }
-            ],
+            loading: false, // table 加载
+            tableData: [],
 
             // 显示新增页面
             showAdd: false
@@ -103,6 +79,23 @@ export default {
                 }
                 this.tableData = response.data
             })
+        },
+        // 初始化股票数据
+        handleInit: function(code) {
+            var params = {
+                code: code
+            }
+            this.loading = true
+            initStock(params).then(response => {
+                this.loading = false
+                if (response.code != 20000) {
+                    this.$message.error(response.message);
+                    return
+                }
+                this.$message.info("初始化成功")
+                this.getStockList()
+            })
+            this.loading = false // 确保服务接口出现任何异常，loading 恢复正常
         },
     },
     mounted: function() {

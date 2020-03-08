@@ -75,3 +75,12 @@ export function getStock() {
         method: 'get'
     })
 }
+
+// 初始化股票数据
+export function initStock(data) {
+    return request({
+        url: BASE_URL+'/stock/init',
+        method: 'post',
+        data
+    })
+}
