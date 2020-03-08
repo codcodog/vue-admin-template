@@ -102,3 +102,21 @@ export function untrack(data) {
         data
     })
 }
+
+// 获取某股信息
+export function getStockInfo(data) {
+    return request({
+        url: BASE_URL+'/stock/info',
+        method: 'get',
+        params: data
+    })
+}
+
+// 更新某股信息
+export function updateStockInfo(data) {
+    return request({
+        url: BASE_URL+'/stock/info/update',
+        method: 'post',
+        data
+    })
+}

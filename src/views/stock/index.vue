@@ -28,8 +28,8 @@
                         <el-button @click="handleInit(scope.row.code)" type="text" v-if="scope.row.isInit == 0">初始化</el-button>
                         <el-button type="text" disabled v-else>初始化</el-button>
 
-                        <el-button type="text">编辑</el-button>
-                        <el-button type="text">增量同步</el-button>
+                        <el-button type="text" @click="edit(scope.row.code)">编辑</el-button>
+                        <el-button type="text" @click="incrSync(scope.row.code)">增量同步</el-button>
                         <el-button type="text">同步日志</el-button>
 
                         <el-button type="text" @click="untrack(scope.row.code)" v-if="scope.row.status == 1">停止跟踪</el-button>
@@ -39,7 +39,7 @@
             </el-table>
         </el-row>
         <el-row>
-            <v-add :showAdd="showAdd" @closeAdd="closeAdd()"/>
+            <v-add :showAdd="showAdd" :isEdit="isEdit" :code="editCode" @closeAdd="closeAdd()"/>
         </el-row>
     </div>
 </template>
@@ -58,7 +58,11 @@ export default {
             tableData: [],
 
             // 显示新增页面
-            showAdd: false
+            showAdd: false,
+
+            // 是否编辑
+            isEdit: false,
+            editCode: ''  // 编辑的 code
         }
     },
     methods: {
@@ -68,6 +72,7 @@ export default {
         },
         closeAdd: function() {
             this.showAdd = false
+            this.isEdit = false
             this.getStockList()
         },
         // 获取股票列表
@@ -130,6 +135,16 @@ export default {
                 this.getStockList()
             })
             this.loading = false
+        },
+        // 编辑该股
+        edit: function(code) {
+            this.isEdit = true
+            this.showAdd = true
+            this.editCode = code
+        },
+        // 增量同步
+        incrSync: function(code) {
+
         },
     },
     mounted: function() {

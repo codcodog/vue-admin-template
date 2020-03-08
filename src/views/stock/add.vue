@@ -1,12 +1,12 @@
 <template>
     <el-dialog
-        title="新增股票"
+        :title="isEdit ? '更新股票':'新增股票'"
         :visible.sync="showAdd"
         width="30%"
         :before-close="handleClose">
         <el-form :model="formData" :rules="rules" :ref="formName" label-width="100px">
             <el-form-item label="股票代码" prop="code">
-                <el-input v-model="formData.code"></el-input>
+                <el-input v-model="formData.code" :disabled="isEdit"></el-input>
             </el-form-item>
             <el-form-item label="股票昵称" prop="name">
                 <el-input v-model="formData.name"></el-input>
@@ -15,22 +15,24 @@
                 <el-date-picker
                     v-model="formData.startDate"
                     type="date"
+                    :disabled="isEdit"
                     placeholder="选择日期时间">
                 </el-date-picker>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="doAdd()">添 加</el-button>
+                <el-button type="primary" @click="doUpdate()" v-if="isEdit">更 新</el-button>
+                <el-button type="primary" @click="doAdd()" v-else>添 加</el-button>
                 <el-button @click="handleClose()">关 闭</el-button>
             </el-form-item>
         </el-form>
     </el-dialog>
 </template>
 <script>
-import {addStock} from '@/api/stock'
+import {addStock, getStockInfo, updateStockInfo} from '@/api/stock'
 
 export default {
     name: "add",
-    props: ['showAdd'],
+    props: ['showAdd', 'isEdit', 'code'],
     data: function(){
         return {
             formName: 'stockForm',
@@ -91,6 +93,49 @@ export default {
 
             return yyyy+'-'+mm+'-'+dd;
         },
+        // 获取股票信息
+        getStockInfo: function(){
+            var params = {
+                code: this.code
+            }
+            getStockInfo(params).then(response => {
+                if (response.code != 20000) {
+                    this.$message.error(response.message);
+                    return
+                }
+                this.formData.code = response.data.code
+                this.formData.name = response.data.name
+                this.formData.startDate = response.data.startDate
+            })
+        },
+        // 更新该股基本信息
+        doUpdate: function() {
+            this.$refs[this.formName].validate((valid) => {
+                if (valid) {
+                    var params = {
+                        code: this.code,
+                        name: this.formData.name
+                    }
+                    updateStockInfo(params).then(response => {
+                        if (response.code != 20000) {
+                            this.$message.error(response.message);
+                            return
+                        }
+                        this.$message.info("更新成功")
+                        this.handleClose()
+                    })
+                } else {
+                    return false
+                }
+            })
+        },
     },
+    watch: {
+        showAdd: function(newValue, oldValue) {
+            if (this.isEdit) {
+                this.getStockInfo()
+            }
+        },
+    }
 }
 </script>
