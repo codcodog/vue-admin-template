@@ -120,3 +120,12 @@ export function updateStockInfo(data) {
         data
     })
 }
+
+// 增量同步
+export function incrSync(data) {
+    return request({
+        url: BASE_URL+'/stock/sync/incr',
+        method: 'post',
+        data
+    })
+}

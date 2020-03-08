@@ -45,7 +45,7 @@
 </template>
 <script>
 import Add from './add'
-import {getStock, initStock, track, untrack} from '@/api/stock'
+import {getStock, initStock, track, untrack, incrSync} from '@/api/stock'
 
 export default {
     name: "data-sync",
@@ -144,7 +144,18 @@ export default {
         },
         // 增量同步
         incrSync: function(code) {
-
+            var params = {
+                code: code
+            }
+            this.loading = true
+            incrSync(params).then(response => {
+                if (response.code != 20000) {
+                    this.$message.error(response.message);
+                    return
+                }
+                this.$message.info("同步成功")
+            })
+            this.loading = false
         },
     },
     mounted: function() {
