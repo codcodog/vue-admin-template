@@ -1,7 +1,7 @@
 <template>
     <el-dialog
         :visible.sync="showLog"
-        width="50%"
+        width="67%"
         :before-close="handleClose">
             <el-table
                 :data="tableData"
@@ -9,7 +9,7 @@
                 <el-table-column
                     prop="id"
                     label="ID"
-                    width="180">
+                    width="100">
                 </el-table-column>
                 <el-table-column
                     prop="code"
