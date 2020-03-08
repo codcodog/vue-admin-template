@@ -129,3 +129,12 @@ export function incrSync(data) {
         data
     })
 }
+
+// 获取某股同步日志
+export function getLog(data) {
+    return request({
+        url: BASE_URL+'/stock/log',
+        method: 'get',
+        params: data
+    })
+}

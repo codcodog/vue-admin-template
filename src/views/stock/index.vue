@@ -30,7 +30,7 @@
 
                         <el-button type="text" @click="edit(scope.row.code)">编辑</el-button>
                         <el-button type="text" @click="incrSync(scope.row.code)">增量同步</el-button>
-                        <el-button type="text">同步日志</el-button>
+                        <el-button type="text" @click="log(scope.row.code)">同步日志</el-button>
 
                         <el-button type="text" @click="untrack(scope.row.code)" v-if="scope.row.status == 1">停止跟踪</el-button>
                         <el-button type="text" @click="track(scope.row.code)" v-else>开始跟踪</el-button>
@@ -41,16 +41,21 @@
         <el-row>
             <v-add :showAdd="showAdd" :isEdit="isEdit" :code="editCode" @closeAdd="closeAdd()"/>
         </el-row>
+        <el-row>
+            <v-log :showLog="showLog" :code="logCode" @closeLog="closeLog()"/>
+        </el-row>
     </div>
 </template>
 <script>
 import Add from './add'
+import Log from './log'
 import {getStock, initStock, track, untrack, incrSync} from '@/api/stock'
 
 export default {
     name: "data-sync",
     components: {
-        "v-add": Add
+        "v-add": Add,
+        "v-log": Log
     },
     data: function() {
         return {
@@ -59,6 +64,10 @@ export default {
 
             // 显示新增页面
             showAdd: false,
+
+            // 显示同步日志
+            showLog: false,
+            logCode: '',
 
             // 是否编辑
             isEdit: false,
@@ -74,6 +83,13 @@ export default {
             this.showAdd = false
             this.isEdit = false
             this.getStockList()
+        },
+        log: function(code) {
+            this.showLog = true
+            this.logCode = code
+        },
+        closeLog: function() {
+            this.showLog = false
         },
         // 获取股票列表
         getStockList: function() {
