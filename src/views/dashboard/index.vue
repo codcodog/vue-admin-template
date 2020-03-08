@@ -26,9 +26,9 @@
                     <el-select v-model="code" placeholder="请选择">
                         <el-option
                             v-for="item in codes"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
+                            :key="item.code"
+                            :label="item.name"
+                            :value="item.code">
                         </el-option>
                     </el-select>
                 </div>
@@ -48,7 +48,7 @@ import "echarts/lib/chart/line";
 import "echarts/lib/component/legend";
 import "echarts/lib/component/tooltip";
 
-import {getStockData} from '@/api/stock'
+import {getStockData, getCodes} from '@/api/stock'
 
 
 export default {
@@ -61,13 +61,8 @@ export default {
             start: '',
             end: '',
 
-            code: 'sh.000016',
-            codes: [
-                {
-                    value: "sh.000016",
-                    label: "上证50",
-                }
-            ],
+            code: '',
+            codes: [],
 
             type: 0,
             types: [
@@ -166,6 +161,7 @@ export default {
                 }
                 if (response.data.prices.length == 0) {
                     this.$message.info('Empty stock data.');
+                    this.initData()
                     return
                 }
                 this.dealStockData(response.data)
@@ -196,10 +192,24 @@ export default {
         changeEnd: function() {
             this.getStockData()
         },
+
+        // 获取 codes 列表
+        getCodes: function() {
+            getCodes().then(response => {
+                if (response.code != 20000) {
+                    this.$message.error(response.message);
+                    return
+                }
+                this.codes = response.data
+                this.code = response.data[0].code // 取第一个 code
+            })
+        }
     },
     watch: {
         code: function(newValue, oldValue) {
-            this.getStockData()
+            if (newValue != '') {
+                this.getStockData()
+            }
         },
         type: function(newValue, oldValue) {
             this.getStockData()
@@ -208,7 +218,7 @@ export default {
     mounted: function() {
         this.start = this.getLastMonthDate();
         this.end = this.getNowDate();
-        this.getStockData()
+        this.getCodes()
     },
 }
 </script>

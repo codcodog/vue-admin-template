@@ -138,3 +138,11 @@ export function getLog(data) {
         params: data
     })
 }
+
+// 获取 codes 列表
+export function getCodes() {
+    return request({
+        url: BASE_URL+'/stock/codes',
+        method: 'get',
+    })
+}
