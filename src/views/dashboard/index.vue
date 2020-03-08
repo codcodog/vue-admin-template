@@ -201,7 +201,9 @@ export default {
                     return
                 }
                 this.codes = response.data
-                this.code = response.data[0].code // 取第一个 code
+                if (response.data.length > 0) {
+                    this.code = response.data[0].code // 取第一个 code
+                }
             })
         }
     },
