@@ -84,3 +84,21 @@ export function initStock(data) {
         data
     })
 }
+
+// 跟踪该股
+export function track(data) {
+    return request({
+        url: BASE_URL+'/stock/track',
+        method: 'post',
+        data
+    })
+}
+
+// 不再跟踪该股
+export function untrack(data) {
+    return request({
+        url: BASE_URL+'/stock/untrack',
+        method: 'post',
+        data
+    })
+}

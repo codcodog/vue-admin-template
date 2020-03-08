@@ -32,8 +32,8 @@
                         <el-button type="text">增量同步</el-button>
                         <el-button type="text">同步日志</el-button>
 
-                        <el-button type="text" v-if="scope.row.status == 1">停止跟踪</el-button>
-                        <el-button type="text" v-else>开始跟踪</el-button>
+                        <el-button type="text" @click="untrack(scope.row.code)" v-if="scope.row.status == 1">停止跟踪</el-button>
+                        <el-button type="text" @click="track(scope.row.code)" v-else>开始跟踪</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -45,7 +45,7 @@
 </template>
 <script>
 import Add from './add'
-import {getStock, initStock} from '@/api/stock'
+import {getStock, initStock, track, untrack} from '@/api/stock'
 
 export default {
     name: "data-sync",
@@ -96,6 +96,40 @@ export default {
                 this.getStockList()
             })
             this.loading = false // 确保服务接口出现任何异常，loading 恢复正常
+        },
+        // 跟踪该股
+        track: function(code) {
+            var params = {
+                code: code
+            }
+            this.loading = true
+            track(params).then(response => {
+                this.loading = false
+                if (response.code != 20000) {
+                    this.$message.error(response.message);
+                    return
+                }
+                this.$message.info("操作成功")
+                this.getStockList()
+            })
+            this.loading = false
+        },
+        // 不再跟踪该股
+        untrack: function(code) {
+            var params = {
+                code: code
+            }
+            this.loading = true
+            untrack(params).then(response => {
+                this.loading = false
+                if (response.code != 20000) {
+                    this.$message.error(response.message);
+                    return
+                }
+                this.$message.info("操作成功")
+                this.getStockList()
+            })
+            this.loading = false
         },
     },
     mounted: function() {
