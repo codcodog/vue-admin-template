@@ -85,9 +85,6 @@ export default {
                     trigger: 'axis',
                 },
                 legend: {
-                    selected: {
-                        "中位数": false
-                    },
                     data: ["价格", "平均数", "中位数"]
                 },
                 grid: {
