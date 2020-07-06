@@ -34,6 +34,7 @@
 
                         <el-button type="text" @click="untrack(scope.row.code)" v-if="scope.row.status == 1">停止跟踪</el-button>
                         <el-button type="text" @click="track(scope.row.code)" v-else>开始跟踪</el-button>
+                        <el-button type="text" @click="del(scope.row.code)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -49,7 +50,7 @@
 <script>
 import Add from './add'
 import Log from './log'
-import {getStock, initStock, track, untrack, incrSync} from '@/api/stock'
+import {getStock, initStock, track, untrack, incrSync, del} from '@/api/stock'
 
 export default {
     name: "data-sync",
@@ -151,6 +152,37 @@ export default {
                 this.getStockList()
             })
             this.loading = false
+        },
+        // 删除该股
+        del: function(code) {
+            console.log(code)
+            this.$confirm('是否删除该股？', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                var params = {
+                    code: code
+                }
+                this.loading = true
+                del(params).then(response => {
+                    this.loading = false
+                    if (response.code != 20000) {
+                        this.$message.error(response.message);
+                    } else {
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功'
+                        })
+                        this.getStockList()
+                    }
+                })
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });          
+            });
         },
         // 编辑该股
         edit: function(code) {

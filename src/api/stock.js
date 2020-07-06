@@ -146,3 +146,12 @@ export function getCodes() {
         method: 'get',
     })
 }
+
+// 删除某股
+export function del(data) {
+    return request({
+        url: BASE_URL+'/stock/delete',
+        method: 'post',
+        data
+    })
+}
