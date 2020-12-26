@@ -54,7 +54,17 @@ export const constantRoutes = [
       meta: { title: 'Dashboard', icon: 'dashboard' }
     }]
   },
-
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/bias',
+    children: [{
+      path: '/data/bias',
+      name: 'Bias',
+      component: () => import('@/views/stock/bias'),
+      meta: { title: 'bias', icon: 'eye' }
+    }]
+  },
   {
     path: '/data',
     component: Layout,

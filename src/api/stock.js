@@ -155,3 +155,12 @@ export function del(data) {
         data
     })
 }
+
+// 获取bias
+export function getBias(data) {
+    return request({
+        url: BASE_URL+'/data/bias',
+        method: 'get',
+        params: data
+    })
+}
