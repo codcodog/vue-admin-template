@@ -7,12 +7,14 @@
                         v-model="start"
                         @change="changeStart()"
                         type="date"
+                        value-format="yyyy-MM-dd"
                         placeholder="选择日期时间">
                     </el-date-picker> - 
                     <el-date-picker
                         v-model="end"
                         @change="changeEnd()"
                         type="date"
+                        value-format="yyyy-MM-dd"
                         placeholder="选择日期时间">
                     </el-date-picker>
                     <el-select v-model="code" placeholder="请选择">
