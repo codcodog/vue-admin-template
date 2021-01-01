@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const BASE_URL = 'http://stock.com'
+const BASE_URL = process.env.VUE_APP_BASE_API
 
 // 获取股票数据
 // data: {

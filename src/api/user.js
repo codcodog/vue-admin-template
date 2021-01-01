@@ -1,6 +1,7 @@
 import request from '@/utils/request'
 
-const BASE_URL = 'http://stock.com'
+const BASE_URL = process.env.VUE_APP_BASE_API
+console.log('base url', BASE_URL)
 
 export function login(data) {
   return request({
