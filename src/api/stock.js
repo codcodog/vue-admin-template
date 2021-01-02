@@ -164,3 +164,21 @@ export function getBias(data) {
         params: data
     })
 }
+
+// 新增/更新 价格监控
+export function savePriceMonitor(data) {
+    return request({
+        url: BASE_URL+'/price/monitor/save',
+        method: 'post',
+        data
+    })
+}
+
+// 获取监控价格数据
+export function getPriceMonitor(data) {
+    return request({
+        url: BASE_URL+'/price/monitor',
+        method: 'get',
+        params: data
+    })
+}

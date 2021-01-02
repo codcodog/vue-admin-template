@@ -34,6 +34,7 @@
 
                         <el-button type="text" @click="untrack(scope.row.code)" v-if="scope.row.status == 1">停止跟踪</el-button>
                         <el-button type="text" @click="track(scope.row.code)" v-else>开始跟踪</el-button>
+                        <el-button type="text" @click="monitor(scope.row.code, scope.row.name)">价格监控</el-button>
                         <el-button type="text" @click="del(scope.row.code)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -45,18 +46,23 @@
         <el-row>
             <v-log :showLog="showLog" :code="logCode" @closeLog="closeLog()"/>
         </el-row>
+        <el-row>
+            <v-monitor :showMonitor="showMonitor" :codeName="codeName" :code="monitorCode" @closeMonitor="closeMonitor()"/>
+        </el-row>
     </div>
 </template>
 <script>
 import Add from './add'
 import Log from './log'
+import Monitor from './monitor'
 import {getStock, initStock, track, untrack, incrSync, del} from '@/api/stock'
 
 export default {
     name: "data-sync",
     components: {
         "v-add": Add,
-        "v-log": Log
+        "v-log": Log,
+        "v-monitor": Monitor
     },
     data: function() {
         return {
@@ -72,7 +78,12 @@ export default {
 
             // 是否编辑
             isEdit: false,
-            editCode: ''  // 编辑的 code
+            editCode: '',  // 编辑的 code
+
+            // 显示价格监控
+            showMonitor: false,
+            codeName: '',
+            monitorCode: ''
         }
     },
     methods: {
@@ -205,6 +216,16 @@ export default {
             })
             this.loading = false
         },
+        monitor: function(code, name) {
+            this.monitorCode = code
+            this.codeName = name
+            this.showMonitor = true
+        },
+        closeMonitor: function() {
+            this.monitorCode = ''
+            this.codeName = ''
+            this.showMonitor = false
+        }
     },
     mounted: function() {
         this.getStockList()

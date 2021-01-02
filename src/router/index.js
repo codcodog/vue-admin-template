@@ -74,7 +74,7 @@ export const constantRoutes = [
         path: '/data/sync',
         name: 'Sync',
         component: () => import('@/views/stock/index'),
-        meta: { title: '数据同步', icon: 'table' }
+        meta: { title: '大水池', icon: 'table' }
       }
     ]
   },
