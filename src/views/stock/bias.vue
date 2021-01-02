@@ -17,7 +17,7 @@
                         value-format="yyyy-MM-dd"
                         placeholder="选择日期时间">
                     </el-date-picker>
-                    <el-select v-model="code" placeholder="请选择">
+                    <el-select v-model="code" filterable placeholder="请选择">
                         <el-option
                             v-for="item in codes"
                             :key="item.code"

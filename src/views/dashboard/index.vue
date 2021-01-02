@@ -25,7 +25,7 @@
                             :value="item.value">
                         </el-option>
                     </el-select>
-                    <el-select v-model="code" placeholder="请选择">
+                    <el-select v-model="code" filterable placeholder="请选择">
                         <el-option
                             v-for="item in codes"
                             :key="item.code"
