@@ -167,18 +167,21 @@ export default {
                     this.initData()
                     return
                 }
-                this.dealStockData(response.data)
+                this.dealStockData(response.data, this.type)
             })
         },
         // 整理数据
-        dealStockData: function(data) {
+        dealStockData: function(data, data_type) {
             this.initData()
+            console.log(data_type)
             for (var index in data.prices) {
                 this.line.xAxis.data.push(data.prices[index].date)
                 this.line.series[0].data.push(data.prices[index].price)
                 this.line.series[1].data.push(data.ave)
                 this.line.series[2].data.push(data.mid)
-                this.line.series[3].data.push(data.price28)
+                if (data_type != 0) {
+                    this.line.series[3].data.push(data.price28)
+                }
             }
         },
         // 初始化值
