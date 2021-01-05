@@ -87,7 +87,7 @@ export default {
                     trigger: 'axis',
                 },
                 legend: {
-                    data: ["价格", "平均数", "中位数"]
+                    data: ["价格", "平均数", "中位数", "28线"]
                 },
                 grid: {
                     left: "left",
@@ -104,7 +104,6 @@ export default {
                     {
                         name: "价格",
                         type: "line",
-                        smooth: true,
                         areaStyle: {},
                         data: []
                     },
@@ -115,6 +114,11 @@ export default {
                     },
                     {
                         name: "中位数",
+                        type: "line",
+                        data: []
+                    },
+                    {
+                        name: "28线",
                         type: "line",
                         data: []
                     }
@@ -174,6 +178,7 @@ export default {
                 this.line.series[0].data.push(data.prices[index].price)
                 this.line.series[1].data.push(data.ave)
                 this.line.series[2].data.push(data.mid)
+                this.line.series[3].data.push(data.price28)
             }
         },
         // 初始化值
@@ -182,6 +187,7 @@ export default {
             this.line.series[0].data = []
             this.line.series[1].data = []
             this.line.series[2].data = []
+            this.line.series[3].data = []
         },
 
         // 日期改变，重新加载数据
