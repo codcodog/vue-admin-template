@@ -29,6 +29,11 @@
             </div>
         </el-row>
         <el-row>
+            <div class="charts-pie">
+                <v-chart :options="pie"/>
+            </div>
+        </el-row>
+        <el-row>
             <div class="charts">
                 <v-chart :options="line"/>
             </div>
@@ -38,6 +43,7 @@
 <script>
 import ECharts from "vue-echarts/components/ECharts";
 import "echarts/lib/chart/line";
+import "echarts/lib/chart/pie";
 import "echarts/lib/component/legend";
 import "echarts/lib/component/tooltip";
 
@@ -84,6 +90,41 @@ export default {
                         name: "sell",
                         data: [],
                         type: 'line'
+                    }
+                ]
+            },
+            pie: {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b}: {c} ({d}%)'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 10,
+                    data: []
+                },
+                series: [
+                    {
+                        name: 'BIAS',
+                        type: 'pie',
+                        radius: ['50%', '80%'],
+                        avoidLabelOverlap: false,
+                        label: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            label: {
+                                show: true,
+                                fontSize: '30',
+                                fontWeight: 'bold'
+                            }
+                        },
+                        labelLine: {
+                            show: false
+                        },
+                        data: [
+                        ]
                     }
                 ]
             },
@@ -137,12 +178,20 @@ export default {
                 this.line.series[1].data.push(data.buy_bias)
                 this.line.series[2].data.push(data.sell_bias)
             }
+
+            var levels = data.levels
+            for (var key in levels) {
+                this.pie.series[0].data.push({value: levels[key], name: key})
+                this.pie.legend.data.push(key)
+            }
         },
         initData: function() {
             this.line.xAxis.data = []
             this.line.series[0].data = []
             this.line.series[1].data = []
             this.line.series[2].data = []
+            this.pie.series[0].data = []
+            this.pie.legend.daat = []
         },
 
         // 日期改变，重新加载数据
@@ -189,11 +238,11 @@ export default {
 .item {
     padding-left: 37px;
 }
-.charts {
+.charts-pie {
     margin-top: 37px;
 }
 .echarts {
     width: 100%;
-    height: 800px;
+    height: 370px;
 }
 </style>
