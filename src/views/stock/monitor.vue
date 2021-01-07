@@ -12,14 +12,14 @@
                 <el-radio v-model="formData.status" :label="1">开启</el-radio>
                 <el-radio v-model="formData.status" :label="0">关闭</el-radio>
             </el-form-item>
-            <el-form-item label="AVE PRICE" prop="avePrice">
-                <el-input v-model="formData.avePrice"></el-input>
+            <el-form-item label="BUY PRICE" prop="buyPrice" label-width="105px">
+                <el-input v-model="formData.buyPrice"></el-input>
             </el-form-item>
-            <el-form-item label="BUY BIAS" prop="buyBias">
-                <el-input v-model="formData.buyBias"></el-input>
+            <el-form-item label="SELL PRICE" prop="sellPrice" label-width="105px">
+                <el-input v-model="formData.sellPrice"></el-input>
             </el-form-item>
-            <el-form-item label="SELL BIAS" prop="sellBias">
-                <el-input v-model="formData.sellBias"></el-input>
+            <el-form-item label="备 注" prop="message" label-width="105px">
+                <el-input type="textarea" :autosize="{minRows: 2, maxRows: 5}"  v-model="formData.message"></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="save()">保存</el-button>
@@ -39,22 +39,19 @@ export default {
             formName: 'monitorForm',
             formData: {
                 status: 1,
-                avePrice: '',
-                buyBias: '',
-                sellBias: '',
+                buyPrice: '',
+                sellPrice: '',
+                message: '',
             },
             rules: {
                 status: [
                     {required: true}
                 ],
-                avePrice: [
-                    {required: true, message: "请输入平均价格", trigger: 'blur'}
+                buyPrice: [
+                    {required: true, message: "请输入 buy price", trigger: 'blur'}
                 ],
-                buyBias: [
-                    {required: true, message: "请输入 buy bias", trigger: 'blur'}
-                ],
-                sellBias: [
-                    {required: true, message: "请输入 sell bias", trigger: 'blur'}
+                sellPrice: [
+                    {required: true, message: "请输入 sell price", trigger: 'blur'}
                 ],
             },
         }
@@ -66,9 +63,9 @@ export default {
                     var params = {
                         code: this.code,
                         status: this.formData.status,
-                        ave_price: this.formData.avePrice,
-                        buy_bias: this.formData.buyBias,
-                        sell_bias: this.formData.sellBias,
+                        buy_price: this.formData.buyPrice,
+                        sell_price: this.formData.sellPrice,
+                        message: this.formData.message,
                     }
                     savePriceMonitor(params).then(response => {
                         if (response.code != 20000) {
@@ -85,10 +82,7 @@ export default {
             this.$emit('closeMonitor')
         },
         init: function() {
-            this.formData.status = 1
-            this.formData.avePrice = ''
-            this.formData.buyBias = ''
-            this.formData.sellBias = ''
+            this.$refs[this.formName].resetFields()
         },
         // 获取价格监控数据
         getPriceMonitor: function() {
@@ -105,9 +99,9 @@ export default {
                     this.init()
                 } else {
                     this.formData.status = response.data.status
-                    this.formData.avePrice = response.data.ave_price
-                    this.formData.buyBias = response.data.buy_bias
-                    this.formData.sellBias = response.data.sell_bias
+                    this.formData.buyPrice = response.data.buy_price
+                    this.formData.sellPrice = response.data.sell_price
+                    this.formData.message = response.data.message
                 }
             })
         },
