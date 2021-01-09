@@ -69,10 +69,11 @@ export function addStock(data) {
 }
 
 // 获取股票
-export function getStock() {
+export function getStock(data) {
     return request({
         url: BASE_URL+'/stock/list',
-        method: 'get'
+        method: 'get',
+        params: data
     })
 }
 

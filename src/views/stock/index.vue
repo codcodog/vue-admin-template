@@ -41,6 +41,18 @@
             </el-table>
         </el-row>
         <el-row>
+            <div class="page">
+                <el-pagination
+                    layout="prev, pager, next"
+                    @current-change="pageChange"
+                    :hide-on-single-page="true"
+                    :page-size="pageSize"
+                    :current-page="page"
+                    :total="total">
+                </el-pagination>
+            </div>
+        </el-row>
+        <el-row>
             <v-add :showAdd="showAdd" :isEdit="isEdit" :code="editCode" @closeAdd="closeAdd()"/>
         </el-row>
         <el-row>
@@ -83,7 +95,12 @@ export default {
             // 显示价格监控
             showMonitor: false,
             codeName: '',
-            monitorCode: ''
+            monitorCode: '',
+
+            // 分页
+            page: 1,
+            pageSize: 10,
+            total: 0,
         }
     },
     methods: {
@@ -105,13 +122,23 @@ export default {
         },
         // 获取股票列表
         getStockList: function() {
-            getStock().then(response => {
+            var params = {
+                'page': this.page,
+                'size': this.pageSize,
+            }
+            getStock(params).then(response => {
                 if (response.code != 20000) {
                     this.$message.error(response.message);
                     return
                 }
-                this.tableData = response.data
+                this.tableData = response.data.data
+                this.total = response.data.total
             })
+        },
+        // 分页修改
+        pageChange: function(currentPage) {
+            this.page = currentPage
+            this.getStockList()
         },
         // 初始化股票数据
         handleInit: function(code) {
@@ -238,5 +265,8 @@ export default {
 }
 .table {
     margin: 0 30px;
+}
+.page {
+    margin: 7px 15px;
 }
 </style>
