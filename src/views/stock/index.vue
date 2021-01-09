@@ -2,6 +2,8 @@
     <div class="main">
         <el-row class="head">
             <el-button type="primary" @click="add()">新 增</el-button>
+            <el-input placeholder="输入昵称" style="width:17%" v-model="searchName" class="input-with-select" suffix-icon="el-icon-search" @change="searchStock">
+            </el-input>
         </el-row>
         <el-row class="table">
             <el-table
@@ -101,6 +103,9 @@ export default {
             page: 1,
             pageSize: 10,
             total: 0,
+
+            // 搜索
+            searchName: '',
         }
     },
     methods: {
@@ -125,6 +130,7 @@ export default {
             var params = {
                 'page': this.page,
                 'size': this.pageSize,
+                'name': this.searchName,
             }
             getStock(params).then(response => {
                 if (response.code != 20000) {
@@ -138,6 +144,10 @@ export default {
         // 分页修改
         pageChange: function(currentPage) {
             this.page = currentPage
+            this.getStockList()
+        },
+        // 搜索
+        searchStock: function() {
             this.getStockList()
         },
         // 初始化股票数据
@@ -268,5 +278,8 @@ export default {
 }
 .page {
     margin: 7px 15px;
+}
+#search {
+    width: 50%;
 }
 </style>

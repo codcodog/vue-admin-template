@@ -82,7 +82,9 @@ export default {
             this.$emit('closeMonitor')
         },
         init: function() {
-            this.$refs[this.formName].resetFields()
+            if (this.$refs[this.formName] !== undefined) {
+                this.$refs[this.formName].resetFields();
+            }
         },
         // 获取价格监控数据
         getPriceMonitor: function() {

@@ -61,7 +61,9 @@ export default {
         },
         // 初始化数据
         initData: function() {
-            this.$refs[this.formName].resetFields();
+            if (this.$refs[this.formName] !== undefined) {
+                this.$refs[this.formName].resetFields();
+            }
         },
         // 新增股票
         doAdd: function() {
