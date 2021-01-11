@@ -184,6 +184,8 @@ export default {
                 this.pie.series[0].data.push({value: levels[key], name: key})
                 this.pie.legend.data.push(key)
             }
+
+            this.pie.series[0].name = 'WIN: '+data.win
         },
         initData: function() {
             this.line.xAxis.data = []
@@ -191,7 +193,8 @@ export default {
             this.line.series[1].data = []
             this.line.series[2].data = []
             this.pie.series[0].data = []
-            this.pie.legend.daat = []
+            this.pie.series[0].name = 'BIAS'
+            this.pie.legend.data = []
         },
 
         // 日期改变，重新加载数据
