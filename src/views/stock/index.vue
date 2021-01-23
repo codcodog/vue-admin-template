@@ -34,8 +34,10 @@
                         <el-button type="text" @click="incrSync(scope.row.code)">增量同步</el-button>
                         <el-button type="text" @click="log(scope.row.code)">同步日志</el-button>
 
+                        <!--
                         <el-button type="text" @click="untrack(scope.row.code)" v-if="scope.row.status == 1">停止跟踪</el-button>
                         <el-button type="text" @click="track(scope.row.code)" v-else>开始跟踪</el-button>
+                        -->
                         <el-button type="text" @click="monitor(scope.row.code, scope.row.name)">价格监控</el-button>
                         <el-button type="text" @click="del(scope.row.code)">删除</el-button>
                     </template>

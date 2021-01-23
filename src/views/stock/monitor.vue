@@ -16,7 +16,7 @@
                 <el-radio v-model="formData.type" :label="0">BIAS</el-radio>
                 <el-radio v-model="formData.type" :label="1">PRICE</el-radio>
             </el-form-item>
-            <div v-if="formData.type==0">
+            <div v-show="formData.type==0">
                 <el-form-item label="BUY BIAS" prop="buyBias" label-width="105px">
                     <el-input v-model="formData.buyBias"></el-input>
                 </el-form-item>
@@ -24,7 +24,7 @@
                     <el-input v-model="formData.sellBias"></el-input>
                 </el-form-item>
             </div>
-            <div v-if="formData.type==1">
+            <div v-show="formData.type==1">
                 <el-form-item label="BUY PRICE" prop="buyPrice" label-width="105px">
                     <el-input v-model="formData.buyPrice"></el-input>
                 </el-form-item>
@@ -112,9 +112,7 @@ export default {
         },
         init: function() {
             if (this.$refs[this.formName] !== undefined) {
-                console.log("====buy price", this.formData.buyPrice)
                 this.$refs[this.formName].resetFields();
-                console.log("====after reset", this.formData.buyPrice)
             }
         },
         // 获取价格监控数据
@@ -128,9 +126,7 @@ export default {
                     return
                 }
 
-                if (response.data.status == undefined) {
-                    this.init()
-                } else {
+                if (response.data.status != undefined) {
                     this.formData.status = response.data.status
                     this.formData.type = response.data.type
                     this.formData.buyBias = response.data.buy_bias
