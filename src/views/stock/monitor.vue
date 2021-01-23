@@ -87,14 +87,14 @@ export default {
             this.$refs[this.formName].validate((valid) => {
                 if (valid) {
                     var params = {
-                        code: this.code,
-                        type: this.formData.type,
-                        status: this.formData.status,
-                        buy_bias: this.formData.buyBias,
-                        sell_bias: this.formData.sellBias,
-                        buy_price: this.formData.buyPrice,
-                        sell_price: this.formData.sellPrice,
-                        message: this.formData.message,
+                        'code': this.code,
+                        'type': this.formData.type,
+                        'status': this.formData.status,
+                        'buy_bias': this.formData.buyBias,
+                        'sell_bias': this.formData.sellBias,
+                        'buy_price': this.formData.buyPrice,
+                        'sell_price': this.formData.sellPrice,
+                        'message': this.formData.message,
                     }
                     savePriceMonitor(params).then(response => {
                         if (response.code != 20000) {
