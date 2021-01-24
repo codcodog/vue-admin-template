@@ -12,11 +12,11 @@
                 <el-radio v-model="formData.status" :label="1">开启</el-radio>
                 <el-radio v-model="formData.status" :label="0">关闭</el-radio>
             </el-form-item>
-            <el-form-item label="类 型" prop="type">
-                <el-radio v-model="formData.type" :label="0">BIAS</el-radio>
-                <el-radio v-model="formData.type" :label="1">PRICE</el-radio>
+            <el-form-item label="类 型" prop="monitorType">
+                <el-radio v-model="formData.monitorType" :label="0">BIAS</el-radio>
+                <el-radio v-model="formData.monitorType" :label="1">PRICE</el-radio>
             </el-form-item>
-            <div v-show="formData.type==0">
+            <div v-show="formData.monitorType==0">
                 <el-form-item label="BUY BIAS" prop="buyBias" label-width="105px">
                     <el-input v-model="formData.buyBias"></el-input>
                 </el-form-item>
@@ -24,7 +24,7 @@
                     <el-input v-model="formData.sellBias"></el-input>
                 </el-form-item>
             </div>
-            <div v-show="formData.type==1">
+            <div v-show="formData.monitorType==1">
                 <el-form-item label="BUY PRICE" prop="buyPrice" label-width="105px">
                     <el-input v-model="formData.buyPrice"></el-input>
                 </el-form-item>
@@ -49,11 +49,36 @@ export default {
     name: "monitor",
     props: ['showMonitor', 'codeName', 'code'],
     data: function() {
+        var validateBuyPrice = (rule, value, callback) => {
+            if (this.formData.monitorType == 1 && value === '') {
+                return callback(new Error('请输入 buy price'))
+            }
+            callback();
+        };
+        var validateSellPrice = (rule, value, callback) => {
+            if (this.formData.monitorType == 1 && value === '') {
+                return callback(new Error('请输入 sell price'))
+            }
+            callback();
+        };
+        var validateBuyBias = (rule, value, callback) => {
+            if (this.formData.monitorType == 0 && value === '') {
+                return callback(new Error('请输入 buy bias'))
+            }
+            callback();
+        };
+        var validateSellBias = (rule, value, callback) => {
+            if (this.formData.monitorType == 0 && value === '') {
+                return callback(new Error('请输入 sell bias'))
+            }
+            callback();
+        };
+
         return {
             formName: 'monitorForm',
             formData: {
                 status: 1,
-                type: 0,
+                monitorType: 0,
                 buyPrice: '',
                 sellPrice: '',
                 buyBias: '',
@@ -64,20 +89,20 @@ export default {
                 status: [
                     {required: true}
                 ],
-                type: [
+                monitorType: [
                     {required: true}
                 ],
                 buyPrice: [
-                    {required: true, message: "请输入 buy price", trigger: 'blur'}
+                    {required: true, validator: validateBuyPrice, trigger: 'blur'}
                 ],
                 sellPrice: [
-                    {required: true, message: "请输入 sell price", trigger: 'blur'}
+                    {required: true, validator: validateSellPrice, trigger: 'blur'}
                 ],
                 buyBias: [
-                    {required: true, message: "请输入 buy bias", trigger: 'blur'}
+                    {required: true, validator: validateBuyBias, trigger: 'blur'}
                 ],
                 sellBias: [
-                    {required: true, message: "请输入 sell bias", trigger: 'blur'}
+                    {required: true, validator: validateSellBias, trigger: 'blur'}
                 ],
             },
         }
@@ -86,14 +111,27 @@ export default {
         save: function() {
             this.$refs[this.formName].validate((valid) => {
                 if (valid) {
+                    if (this.formData.buyPrice === '') {
+                        this.formData.buyPrice = 0
+                    }
+                    if (this.formData.sellPrice === '') {
+                        this.formData.sellPrice = 0
+                    }
+                    if (this.formData.buyBias === '') {
+                        this.formData.buyBias = 0
+                    }
+                    if (this.formData.sellBias === '') {
+                        this.formData.sellBias = 0
+                    }
+
                     var params = {
                         'code': this.code,
-                        'type': this.formData.type,
+                        'type': this.formData.monitorType,
                         'status': this.formData.status,
-                        'buy_bias': this.formData.buyBias,
-                        'sell_bias': this.formData.sellBias,
-                        'buy_price': this.formData.buyPrice,
-                        'sell_price': this.formData.sellPrice,
+                        'buy_bias': parseInt(this.formData.buyBias, 10),
+                        'sell_bias': parseInt(this.formData.sellBias, 10),
+                        'buy_price': parseInt(this.formData.buyPrice, 10),
+                        'sell_price': parseInt(this.formData.sellPrice, 10),
                         'message': this.formData.message,
                     }
                     savePriceMonitor(params).then(response => {
@@ -128,11 +166,11 @@ export default {
 
                 if (response.data.status != undefined) {
                     this.formData.status = response.data.status
-                    this.formData.type = response.data.type
-                    this.formData.buyBias = response.data.buy_bias
-                    this.formData.sellBias = response.data.sell_bias
-                    this.formData.buyPrice = response.data.buy_price
-                    this.formData.sellPrice = response.data.sell_price
+                    this.formData.monitorType = response.data.type
+                    this.formData.buyBias = response.data.buy_bias == 0 ? '' : response.data.buy_bias
+                    this.formData.sellBias = response.data.sell_bias == 0 ? '' : response.data.sell_bias
+                    this.formData.buyPrice = response.data.buy_price == 0 ? '' : response.data.buy_price
+                    this.formData.sellPrice = response.data.sell_price == 0 ? '' : response.data.sell_price
                     this.formData.message = response.data.message
                 }
             })
