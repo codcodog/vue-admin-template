@@ -67,11 +67,11 @@ export default {
                     trigger: 'axis',
                 },
                 legend: {
-                    data: ["bias", "buy", "sell"]
+                    data: ["bias", "buy", "sell", "mid"]
                 },
                 xAxis: {
                     type: 'category',
-                    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                    data: []
                 },
                 yAxis: {
                 },
@@ -88,6 +88,11 @@ export default {
                     },
                     {
                         name: "sell",
+                        data: [],
+                        type: 'line'
+                    },
+                    {
+                        name: "mid",
                         data: [],
                         type: 'line'
                     }
@@ -177,6 +182,7 @@ export default {
                 this.line.series[0].data.push(data.biases[index].bias)
                 this.line.series[1].data.push(data.buy_bias)
                 this.line.series[2].data.push(data.sell_bias)
+                this.line.series[3].data.push(data.mid_bias)
             }
 
             var levels = data.levels
@@ -192,6 +198,7 @@ export default {
             this.line.series[0].data = []
             this.line.series[1].data = []
             this.line.series[2].data = []
+            this.line.series[3].data = []
             this.pie.series[0].data = []
             this.pie.series[0].name = 'BIAS'
             this.pie.legend.data = []
