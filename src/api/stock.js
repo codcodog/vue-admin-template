@@ -166,6 +166,15 @@ export function getBias(data) {
     })
 }
 
+// 获取ttm
+export function getTtm(data) {
+    return request({
+        url: BASE_URL+'/data/ttm',
+        method: 'get',
+        params: data
+    })
+}
+
 // 新增/更新 价格监控
 export function savePriceMonitor(data) {
     return request({

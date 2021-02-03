@@ -38,6 +38,11 @@
                 <v-chart :options="line"/>
             </div>
         </el-row>
+        <el-row>
+            <div class="charts">
+                <v-chart :options="ttm_line"/>
+            </div>
+        </el-row>
     </div>
 </template>
 <script>
@@ -47,7 +52,7 @@ import "echarts/lib/chart/pie";
 import "echarts/lib/component/legend";
 import "echarts/lib/component/tooltip";
 
-import {getBias, getCodes} from '@/api/stock'
+import {getBias, getTtm, getCodes} from '@/api/stock'
 
 export default {
     name: 'Bias',
@@ -78,6 +83,43 @@ export default {
                 series: [
                     {
                         name: "bias",
+                        data: [],
+                        type: 'line'
+                    },
+                    {
+                        name: "buy",
+                        data: [],
+                        type: 'line'
+                    },
+                    {
+                        name: "sell",
+                        data: [],
+                        type: 'line'
+                    },
+                    {
+                        name: "mid",
+                        data: [],
+                        type: 'line'
+                    }
+                ]
+            },
+            ttm_line: {
+                tooltip: {
+                    trigger: 'axis',
+                },
+                legend: {
+                    data: ["ttm", "buy", "sell", "mid"]
+                },
+                xAxis: {
+                    type: 'category',
+                    data: []
+                },
+                yAxis: {
+                    scale: true
+                },
+                series: [
+                    {
+                        name: "ttm",
                         data: [],
                         type: 'line'
                     },
@@ -176,7 +218,7 @@ export default {
             })
         },
         dealBiasData: function(data) {
-            this.initData()
+            this.initBias()
             for (var index in data.biases) {
                 this.line.xAxis.data.push(data.biases[index].date)
                 this.line.series[0].data.push(data.biases[index].bias)
@@ -193,7 +235,36 @@ export default {
 
             this.pie.series[0].name = 'WIN: '+data.win
         },
-        initData: function() {
+        // 获取 ttm
+        getTtm: function() {
+            var data = {
+                'code': this.code,
+                'start_date': this.start,
+                'end_date': this.end,
+            }
+            getTtm(data).then(response => {
+                if (response.code != 20000) {
+                    this.$message.error(response.message);
+                    return
+                }
+                if (response.data.ttms.length == 0) {
+                    this.$message.info('Empty ttm data.');
+                    return
+                }
+                this.dealTtmData(response.data)
+            })
+        },
+        dealTtmData: function(data) {
+            this.initTtm()
+            for (var index in data.ttms) {
+                this.ttm_line.xAxis.data.push(data.ttms[index].date)
+                this.ttm_line.series[0].data.push(data.ttms[index].ttm)
+                this.ttm_line.series[1].data.push(data.buy_ttm)
+                this.ttm_line.series[2].data.push(data.sell_ttm)
+                this.ttm_line.series[3].data.push(data.mid_ttm)
+            }
+        },
+        initBias: function() {
             this.line.xAxis.data = []
             this.line.series[0].data = []
             this.line.series[1].data = []
@@ -203,13 +274,22 @@ export default {
             this.pie.series[0].name = 'BIAS'
             this.pie.legend.data = []
         },
+        initTtm: function() {
+            this.ttm_line.xAxis.data = []
+            this.ttm_line.series[0].data = []
+            this.ttm_line.series[1].data = []
+            this.ttm_line.series[2].data = []
+            this.ttm_line.series[3].data = []
+        },
 
         // 日期改变，重新加载数据
         changeStart: function() {
             this.getBias()
+            this.getTtm()
         },
         changeEnd: function() {
             this.getBias()
+            this.getTtm()
         },
 
         // 获取 codes 列表
@@ -230,6 +310,7 @@ export default {
         code: function(newValue, oldValue) {
             if (newValue != '') {
                 this.getBias()
+                this.getTtm()
             }
         },
     },
