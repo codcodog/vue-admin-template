@@ -190,7 +190,7 @@ export default {
         // 获取前一个月日期
         getLastMonthDate: function() {
             var today = new Date();
-            today.setMonth(today.getMonth()-1);
+            today.setMonth(today.getMonth()-3);
 
             var dd = String(today.getDate()).padStart(2, '0');
             var mm = String(today.getMonth() + 1).padStart(2, '0');
