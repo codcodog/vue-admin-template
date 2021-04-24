@@ -128,10 +128,10 @@ export default {
                         'code': this.code,
                         'type': this.formData.monitorType,
                         'status': this.formData.status,
-                        'buy_bias': parseInt(this.formData.buyBias, 10),
-                        'sell_bias': parseInt(this.formData.sellBias, 10),
-                        'buy_price': parseInt(this.formData.buyPrice, 10),
-                        'sell_price': parseInt(this.formData.sellPrice, 10),
+                        'buy_bias': parseFloat(this.formData.buyBias),
+                        'sell_bias': parseFloat(this.formData.sellBias),
+                        'buy_price': parseFloat(this.formData.buyPrice),
+                        'sell_price': parseFloat(this.formData.sellPrice),
                         'message': this.formData.message,
                     }
                     savePriceMonitor(params).then(response => {
