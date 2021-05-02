@@ -17,14 +17,6 @@
                         value-format="yyyy-MM-dd"
                         placeholder="选择日期时间">
                     </el-date-picker>
-                    <el-select v-model="type" placeholder="请选择">
-                        <el-option
-                            v-for="item in types"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
-                        </el-option>
-                    </el-select>
                     <el-select v-model="code" filterable placeholder="请选择">
                         <el-option
                             v-for="item in codes"
@@ -66,28 +58,12 @@ export default {
             code: '',
             codes: [],
 
-            type: 0,
-            types: [
-                {
-                    value: 0,
-                    label: 'CLOSE',
-                },
-                {
-                    value: 1,
-                    label: 'LOW',
-                },
-                {
-                    value: 2,
-                    label: 'HIGH',
-                }
-            ],
-
             line: {
                 tooltip: {
                     trigger: 'axis',
                 },
                 legend: {
-                    data: ["价格", "平均数", "中位数", "28线"]
+                    data: ["close", "low", "mid", "high"]
                 },
                 grid: {
                     left: "left",
@@ -102,23 +78,23 @@ export default {
                 },
                 series: [
                     {
-                        name: "价格",
+                        name: "close",
                         type: "line",
                         areaStyle: {},
                         data: []
                     },
                     {
-                        name: "平均数",
+                        name: "low",
                         type: "line",
                         data: []
                     },
                     {
-                        name: "中位数",
+                        name: "mid",
                         type: "line",
                         data: []
                     },
                     {
-                        name: "28线",
+                        name: "high",
                         type: "line",
                         data: []
                     }
@@ -136,10 +112,10 @@ export default {
 
             return yyyy+'-'+mm+'-'+dd;
         },
-        // 获取前一个月日期
+        // 获取前三个月日期
         getLastMonthDate: function() {
             var today = new Date();
-            today.setMonth(today.getMonth()-1);
+            today.setMonth(today.getMonth()-3);
 
             var dd = String(today.getDate()).padStart(2, '0');
             var mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -149,15 +125,12 @@ export default {
         },
         // 获取股票数据
         getStockData: function() {
-            var data = {
-                type: this.type,
-                params: {
-                    code: this.code,
-                    start_date: this.start,
-                    end_date: this.end
-                }
+            var params = {
+                code: this.code,
+                start_date: this.start,
+                end_date: this.end
             };
-            getStockData(data).then(response => {
+            getStockData(params).then(response => {
                 if (response.code != 20000) {
                     this.$message.error(response.message);
                     return
@@ -173,16 +146,14 @@ export default {
         // 整理数据
         dealStockData: function(data, data_type) {
             this.initData()
-            console.log(data_type)
             for (var index in data.prices) {
                 this.line.xAxis.data.push(data.prices[index].date)
-                this.line.series[0].data.push(data.prices[index].price)
-                this.line.series[1].data.push(data.ave)
+                this.line.series[0].data.push(data.prices[index].close)
+                this.line.series[1].data.push(data.low)
                 this.line.series[2].data.push(data.mid)
-                if (data_type != 0) {
-                    this.line.series[3].data.push(data.price28)
-                }
+                this.line.series[3].data.push(data.high)
             }
+            console.log(this.line.series)
         },
         // 初始化值
         initData: function() {

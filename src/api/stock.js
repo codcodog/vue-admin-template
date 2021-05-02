@@ -11,7 +11,7 @@ const BASE_URL = process.env.VUE_APP_BASE_API
 //      end: '2020-03-06'
 //  }
 // }
-export function getStockData(data) {
+export function getStockData_bak(data) {
     switch(data.type) {
         case 0:
             data = getClose(data.params);
@@ -30,6 +30,14 @@ export function getStockData(data) {
             }
     }
     return data
+}
+
+export function getStockData(data) {
+    return request({
+        url: BASE_URL+'/stock/data',
+        method: 'get',
+        params: data
+    })
 }
 
 // 获取 close 数据
