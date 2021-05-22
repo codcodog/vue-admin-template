@@ -11,6 +11,10 @@
             <el-form-item label="股票昵称" prop="name">
                 <el-input v-model="formData.name"></el-input>
             </el-form-item>
+            <el-form-item label="股票类型" prop="type">
+                <el-radio v-model="formData.type" :label="0" :disabled="isEdit">股票</el-radio>
+            <el-radio v-model="formData.type" :label="1" :disabled="isEdit">基金</el-radio>
+            </el-form-item>
             <el-form-item label="开始日期" prop="startDate">
                 <el-date-picker
                     v-model="formData.startDate"
@@ -39,7 +43,8 @@ export default {
             formData: {
                 code: '',
                 name: '',
-                startDate: ''
+                type: 0,
+                startDate: '',
             },
             rules: {
                 code: [
@@ -47,6 +52,9 @@ export default {
                 ],
                 name: [
                     {required: true, message: "请输入股票昵称", trigger: 'blur'}
+                ],
+                type: [
+                    {required: true, message: "请输入股票类型", trigger: 'blur'}
                 ],
                 startDate: [
                     {required: true, message: "请输入开始日期", trigger: 'blur'}
@@ -72,6 +80,7 @@ export default {
                     var params = {
                         code: this.formData.code,
                         name: this.formData.name,
+                        type: this.formData.type,
                         startDate: this.getDateString(this.formData.startDate)
                     }
                     addStock(params).then(response => {
@@ -106,6 +115,7 @@ export default {
                     return
                 }
                 this.formData.code = response.data.code
+                this.formData.type = response.data.code_type
                 this.formData.name = response.data.name
                 this.formData.startDate = response.data.startDate
             })

@@ -17,12 +17,12 @@
                         value-format="yyyy-MM-dd"
                         placeholder="选择日期时间">
                     </el-date-picker>
-                    <el-select v-model="code" filterable placeholder="请选择">
+                    <el-select v-model="codeData" value-key="code" filterable placeholder="请选择">
                         <el-option
                             v-for="item in codes"
                             :key="item.code"
                             :label="item.name"
-                            :value="item.code">
+                            :value="item">
                         </el-option>
                     </el-select>
                 </div>
@@ -55,7 +55,11 @@ export default {
             start: '',
             end: '',
 
-            code: '',
+            codeData: {
+                code: '',
+                name: '',
+                code_type: -1,
+            },
             codes: [],
 
             line: {
@@ -126,7 +130,8 @@ export default {
         // 获取股票数据
         getStockData: function() {
             var params = {
-                code: this.code,
+                code: this.codeData.code,
+                code_type: this.codeData.code_type,
                 start_date: this.start,
                 end_date: this.end
             };
@@ -140,11 +145,11 @@ export default {
                     this.initData()
                     return
                 }
-                this.dealStockData(response.data, this.type)
+                this.dealStockData(response.data)
             })
         },
         // 整理数据
-        dealStockData: function(data, data_type) {
+        dealStockData: function(data) {
             this.initData()
             for (var index in data.prices) {
                 this.line.xAxis.data.push(data.prices[index].date)
@@ -181,19 +186,16 @@ export default {
                 }
                 this.codes = response.data
                 if (response.data.length > 0) {
-                    this.code = response.data[0].code // 取第一个 code
+                    this.codeData = response.data[0] // 取第一个 code
                 }
             })
         }
     },
     watch: {
-        code: function(newValue, oldValue) {
+        'codeData.code': function(newValue, oldValue) {
             if (newValue != '') {
                 this.getStockData()
             }
-        },
-        type: function(newValue, oldValue) {
-            this.getStockData()
         },
     },
     mounted: function() {

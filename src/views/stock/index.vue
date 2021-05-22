@@ -30,8 +30,8 @@
                         <el-button @click="handleInit(scope.row.code)" type="text" v-if="scope.row.isInit == 0">初始化</el-button>
                         <el-button type="text" disabled v-else>初始化</el-button>
 
-                        <el-button type="text" @click="edit(scope.row.code)">编辑</el-button>
-                        <el-button type="text" @click="incrSync(scope.row.code)">增量同步</el-button>
+                        <el-button type="text" @click="edit(scope.row.code, scope.row.code_type)">编辑</el-button>
+                        <el-button type="text" @click="incrSync(scope.row.code, scope.row.code_type)">增量同步</el-button>
                         <el-button type="text" @click="log(scope.row.code)">同步日志</el-button>
 
                         <!--
@@ -235,15 +235,17 @@ export default {
             });
         },
         // 编辑该股
-        edit: function(code) {
+        edit: function(code, codeType) {
             this.isEdit = true
             this.showAdd = true
             this.editCode = code
+            this.editCodeType = codeType
         },
         // 增量同步
-        incrSync: function(code) {
+        incrSync: function(code, code_type) {
             var params = {
-                code: code
+                code: code,
+                code_type: code_type
             }
             this.loading = true
             incrSync(params).then(response => {
