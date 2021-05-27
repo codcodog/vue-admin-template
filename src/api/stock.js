@@ -165,6 +165,15 @@ export function del(data) {
     })
 }
 
+// 重建某股
+export function rebuild(data) {
+    return request({
+        url: BASE_URL+'/stock/data/rebuild',
+        method: 'post',
+        data
+    })
+}
+
 // 获取bias
 export function getBias(data) {
     return request({

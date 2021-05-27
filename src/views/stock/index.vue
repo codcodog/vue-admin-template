@@ -39,6 +39,7 @@
                         <el-button type="text" @click="track(scope.row.code)" v-else>开始跟踪</el-button>
                         -->
                         <el-button type="text" @click="monitor(scope.row.code, scope.row.name)">价格监控</el-button>
+                        <el-button type="text" @click="rebuild(scope.row.code)">重建数据</el-button>
                         <el-button type="text" @click="del(scope.row.code)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -71,7 +72,7 @@
 import Add from './add'
 import Log from './log'
 import Monitor from './monitor'
-import {getStock, initStock, track, untrack, incrSync, del} from '@/api/stock'
+import {getStock, initStock, track, untrack, incrSync, del, rebuild} from '@/api/stock'
 
 export default {
     name: "data-sync",
@@ -205,7 +206,6 @@ export default {
         },
         // 删除该股
         del: function(code) {
-            console.log(code)
             this.$confirm('是否删除该股？', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -233,6 +233,23 @@ export default {
                     message: '已取消删除'
                 });          
             });
+        },
+        // 重建某股
+        rebuild: function(code) {
+            var params = {
+                code: code
+            }
+            this.loading = true
+            rebuild(params).then(response => {
+                this.loading = false
+                if (response.code != 20000) {
+                    this.$message.error(response.message);
+                    return
+                }
+                this.$message.info("操作成功")
+                this.getStockList()
+            })
+            this.loading = false
         },
         // 编辑该股
         edit: function(code, codeType) {
